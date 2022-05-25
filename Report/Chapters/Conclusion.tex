@@ -1,0 +1,48 @@
+The ability of a finite-difference-discretised solver to predict wave propagation and damping has been investigated, with clear positive results of recommended BC parameter combinations. The list of objectives from Section \ref{IntroductionSection} are revisited below in Table \ref{tab:ConclusionObjectives}.
+
+\begin{table}[h]
+    \centering
+    \caption{Project Objectives.}
+    \begin{tabular}{ll}
+        \hline \hline
+        \textbf{Objective} & \textbf{Achieved?} \\
+        \hline
+        Discretise PDEs using CAA-relevant schemes & Yes \\
+        Write a linearised solver in MATLAB to predict wave propagation & Yes \\
+        Implement absorbing zone NRBCs & Yes\\
+        Benchmark the solver against workshop problems & Yes\\
+        Determine 'optimal' NRBC parameters & Mostly \\
+        \hline \hline
+    \end{tabular}
+    \label{tab:ConclusionObjectives}
+\end{table}
+
+
+The majority of the objectives have been completed in the fullest, with the exception of the final determination of 'optimal' NRBC parameters. Whilst results have been achieved, they require evaluation through another solver\footnote[2]{there does come a point though where the next solver must then be validated, and the same again, until no end. So these results are likely well-grounded}.
+
+As described and justified in the results section, implementation of the perfectly matched layer BC in a linearised Euler CAA solver should be parameterised for efficiency with a PML width of $D_{x,y}=19 \Delta x$, and damping coefficient $2.7 \leq \sigma_{x,y} \leq 5.3$. Should absolute solver reliability and accuracy be more important than computational efficiency, it would be feasible to increase the PML width to $D_{x,y}=25-30 \Delta x$ with the same damping coefficients at a slight computational expense.
+
+
+As for discretisation schemes, the dispersion relation preserving scheme by \textcite{tam193DRP} forms a self-contained spatial and temporal method and is readily applicable to various governing equations (including those augmented by boundary conditions) - making it an excellent choice for a computational aeroacoustics solver. 
+
+
+
+The presented work indicates some limitations of the approach, and also of the selected boundary condition. For starters, the constructed domain is simplified to be only 2-dimensional, which is useful for simplifying the computational implementation but neglects potential 3D effects. Additionally, the governing equations are the linearised Euler equations, and assume linear wave propagation even for higher Mach numbers and frequencies (shorter wave components). In reality, the wave propagation contains nonlinear characteristics which must be captured by nonlinear Euler equations. The recommended parameters are also derived from the square damping profile $\Gamma$, and so might require tweaking for higher power profiles (this would only be considered should it provide greater efficiency, in which case it might only be a few grid points different). A single self-contained spatial \& temporal discretisation scheme has also been used where other schemes might predict slightly different propagation.
+
+As for the perfectly matched layer BC itself, \textcite{johnson2021notesonPML} highlights an issue where waves at a glancing incidence might incur round-trip reflections in the absorbing zone. The exclusive application of the PML BC to the outer boundaries of the CAA domain (for this project trying to represent an open domain, not ducted) lessens this issue substantially. Additionally, the PML method is only reflectionless when solving for the exact wave equations (as discussed in Section \ref{NumMethSect}) - and is subject to errors where finite difference schemes make approximations. Thus it's performance is not consistent across schemes.
+
+
+
+\subsection{Further work}
+
+First and foremost, the work carried out here may be extended by assessing the numerically derived 'optimal' parameters on a more mature research solver. As thorough as the outlined approach may be, it is still \textit{good science} to formally assess conclusive results through another medium. Additionally, further investigations might proceed in areas such as:
+\begin{itemize}
+    \itemsep0em
+    \item Use of different FD schemes which are less common in CAA implementations. This project's approach to PML performance is fundamentally based on numerical results, and not on the wavenumber and analytical solutions.
+    \item Expansion of domain geometry to be more representative of gas turbine fan ducting (shape and additional spatial dimension) - which would introduce other variables such as angle of incidence and 3D effects. The Third CAA workshop \cite{dahl2000caaworkshop} also contains problems based on engine fans.
+    \item Testing of perfectly matched layer method for waves at glancing incidences.
+    \item Exploration of PML as an absorbing material - to potentially be used to model liner characteristics rather than using an extended Helmholtz resonator. Could purposeful reflection be introduced?
+    \item Optimisation of PML parameters for nonlinear Euler equations or even Navier-Stokes equations. Additional elements would be required such as shock handling, high-order numerical damping, and differing Euler/PML equations (PENNE equations \cite{long2000nonconservative}).
+    \item On the topic of liners - using absorption to influence thermoacoustic stability of flames within combustors (very cutting-edge).
+\end{itemize}
+

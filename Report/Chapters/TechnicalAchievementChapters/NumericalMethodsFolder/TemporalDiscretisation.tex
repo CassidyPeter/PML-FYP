@@ -1,0 +1,68 @@
+\subsubsection{Temporal Discretisation} \label{TempDiscrSection}
+
+Time-marching schemes are used to discretise temporal derivatives, and two popular methods are used in numerical solutions: single time step Runge-Kutta (RK), and multi-level Adams-Bashforth (AB). As previously outlined, the DRP scheme \cite{tam193DRP} combines space-time discretisation in the wave number and frequency space through finite difference approximations, and uses a four-level AB scheme. Another useful scheme is the Low Dissipation and Low Dispersion RK method derived by \textcite{hu1996lddrk}, which uses coefficients optimised to minimise dissipation and dispersion errors for CAA spaces. The stability limits of time integration schemes are determined by taking the roots of the effective angular frequency (derived from Laplace transforming the time-marching schemes) and finding the point at which the imaginary components become positive (unstable). \textcite{kubratskii2004reviewcaaalgo} compares the stability limits of both the DRP \cite{tam193DRP} and LDDRK \cite{hu1996lddrk} schemes, and concludes that above a certain angular frequency, spurious waves (thus spurious roots) cause numerical instabilities in both schemes and require numerical damping should the wavenumber become too short. Thus it would be of no detriment to use either, and for the sake of easy implementation - the DRP AB scheme is used over the LDDRK scheme to match the spatial scheme.
+
+
+The DRP scheme is readily applied to PML Equations \ref{eq:FinalPML} and \ref{eq:FinalPMLAux}, which are rewritten to isolate the temporal term in the general form of
+
+\begin{equation} \label{eq:GeneralDRPK}
+    \mathbf{K} = - \frac{\partial \mathbf{f_1}}{\partial x} - \frac{\partial \mathbf{f_2}}{\partial y} + \mathbf{W}
+\end{equation}
+\begin{equation} \label{eq:GeneralDRPTemporal}
+    \frac{\partial \mathbf{U}}{\partial t} = \mathbf{K}
+\end{equation}
+
+where $\mathbf{f_1}$ and $\mathbf{f_2}$ represent the $x-$ and $y-$ spatial operands, and $\mathbf{W}$ the non-derivative terms. Equation \ref{eq:GeneralDRPK} is then expanded with the PML flavoured operands and non-derivative terms, and discretised by the dispersion-relation preserving 7-point optimised FD scheme as
+
+\begin{equation} \label{eq:PMLDRP}
+\begin{split}
+    \mathbf{K}^{\left(n\right)}_{l,m} = - \frac{1}{\Delta x} \mathbf{A} \sum^3_{j=-3} a_j \mathbf{U}^{\left(n\right)}_{l+j,m} - \frac{1}{\Delta y} \mathbf{B} \sum^3_{j=-3} a_j \mathbf{U}^{\left(n\right)}_{l+j,m} - \left(\sigma_{x_{l}} + \sigma_{y_{m}} \right) \mathbf{U}^{\left( n \right)}_{l,m} - \frac{\sigma_{y_{m}}}{\Delta x} \mathbf{A} \sum^3_{j=-3} a_j \mathbf{q}^{\left(n\right)}_{l+j,m} \\ - \frac{\sigma_{x_{l}}}{\Delta y} \mathbf{B} \sum^3_{j=-3} a_j \mathbf{q}^{\left(n\right)}_{l+j,m} - \sigma_{x_{l}}\sigma_{y_{m}}\mathbf{q}^{\left(n\right)}_{l,m} - \sigma_{x_l}\frac{M}{1-M^2}\mathbf{A} \left(\mathbf{U}^{\left( n \right)}_{l,m} + \sigma_{y_m}\mathbf{q}^{\left(n\right)}_{l,m} \right)
+    \end{split}
+\end{equation}
+
+ and Equation \ref{eq:GeneralDRPTemporal} by the explicit four-level Adams-Bashforth scheme as
+ 
+\begin{equation} \label{eq:PMLDRPTemporal}
+    \mathbf{U}^{\left(n+1\right)}_{l,m} = \mathbf{U}^{\left(n\right)}_{l,m} + \Delta t \sum^3_{j=0} b_j \mathbf{K}^{\left(n-j\right)}_{l,m}
+\end{equation}
+
+Note the auxiliary term in Equation \ref{eq:FinalPMLAux} is discretised separately in the PML zones as
+
+\begin{equation}
+    \mathbf{q}^{\left(n+1\right)}_{l,m} = \mathbf{q}^{\left(n\right)}_{l,m} + \Delta t \sum^3_{j=0} b_j \mathbf{U}^{\left(n-j\right)}_{l,m}
+\end{equation}
+
+
+where $l,m$ indices are the $x,y$ indices, $n$ is the temporal index, and $a_j,b_j$ are the DRP FD and AB stencil coefficients (found in Table \ref{tab:FDABCoeffs}). $\sigma_{x_l}, \sigma_{y_m}$ are determined by Equation \ref{PMLProfileEq}, where the damping coefficients are $0$ within the Euler domain, and are increased gradually towards $\sigma_{x_{\mathrm{max}}}$ within the PML zone - depending on the cell's proximity to the outer boundary.
+
+
+\begin{table}[h]
+    \centering
+    \caption{Finite Difference and Adams-Bashforth coefficients for DRP \cite{tam193DRP}. N.B. $a_j=-a_{-j}$.}
+    \begin{tabular}{lcllc}
+        % \Xhline{2\arrayrulewidth}
+        % \Xhline{1.5pt}
+        \hline \hline
+        \textbf{FD} & \textbf{Coefficient} & & \textbf{AB} & \textbf{Coefficient} \\
+        \hline
+        $a_0$ & 0 & & $b_0$ & 2.302558088383 \\
+        $a_1$ & 0.770882380518 & & $b_1$ & -2.4910075998482 \\
+        $a_2$ & -0.166705904415 & & $b_2$ & 1.5743409331815 \\
+        $a_3$ & 0.0208431427703 & & $b_3$ & -0.38589142217162 \\
+        % \Xhline{2\arrayrulewidth}
+        % \Xhline{1.5pt}  
+        \hline \hline
+    \end{tabular}
+    \label{tab:FDABCoeffs}
+\end{table}
+
+Edge cases with the spatial and temporal discretisations require careful consideration. Within spatial discretisation, ghost nodes are apparent - where a cell towards/on the edge of the domain will sample cells from outside the domain. One might be inclined to move towards a forward or backward difference scheme to sample just from inside the domain, however, the central difference scheme still holds higher accuracy even when setting ghost nodes to the closest domain edge value \cite{kopecky2007numericaldiff} \cite{nedialkov2015forwardbackward}. And so for any cells within 3 grid points (7-point scheme) of the outer boundary, the values of $_{j}$ which coincide with cells outside the domain are adjusted to reflect the outer boundary edge values. For temporal edge cases ($t<3\Delta t$, effectively starting conditions), the multi-step AB scheme is set so that $\mathbf{U}^{\left(0\right)}_{l,m}=\mathbf{U}_{\mathrm{initial}}$ or $\mathbf{U}^{\left(n\right)}_{l,m}=0$ for negative n.
+
+
+The largest possible timestep, $\Delta t$, can be determined by considering either numerical stability or dispersion relation stability (accuracy). Typically in CAA the smaller/more stringent of the two is chosen \cite{tam2012computational}, and for the case of acoustical waves, the accuracy limit fulfils the stringency role as
+
+\begin{equation} \label{eq:Timestep}
+    \Delta t_{\mathrm{max}} \leq \frac{0.211}{  M + \sqrt{1 + \left(\frac{\Delta x}{\Delta y}\right)^2}} \frac{\Delta x}{\sqrt{\gamma \frac{p_0}{\rho_0}}}
+\end{equation}
+
+where $p_0$ and $\rho_0$ are the maximum initial pressure and density perturbations, $M$ is the freestream Mach number, and $\gamma$ is the heat capacity ratio (1.4).

@@ -1,0 +1,123 @@
+\subsection{Governing Equations}
+
+
+Within this project, only the propagation of waves into the farfield is of interest. Thus, the viscous effects of the flow can be considered 2nd order as a source of sound - and can therefore be neglected from the governing equations. This largely simplifies the CAA approach and means the Linearised Euler Equations (LEE) can be used. Had the project required significant work on modelling the noise source, full nonlinear solutions such as DNS, LES, and DES would be required for the source zone.
+
+As described in the Background section (Section \ref{BackgroundSection}), the hybrid CAA method allows for the wave propagation to be solved by assuming the acoustic values are a small, linear, unsteady perturbation on the steady mean flow. Thus, the Euler Equations are first presented in two-dimensional, conservative form with Cartesian coordinates as
+
+\begin{equation}
+    \frac{\partial \mathbf{U}}{\partial t} + \frac{\partial \mathbf{E}_{e}}{\partial x} + \frac{\partial \mathbf{F}_{e}}{\partial y} = 0
+\end{equation}
+where
+\begin{displaymath}
+\mathbf{U} = 
+\begin{bmatrix}
+\rho \\
+\rho u \\
+\rho v \\
+\rho e_{T}
+\end{bmatrix}, \quad
+\mathbf{E}_{e} = 
+\begin{bmatrix}
+\rho u \\
+p + \rho u^2 \\
+\rho u v \\
+u \left(\rho e_{T} + p \right)
+\end{bmatrix}, \quad
+\mathbf{F}_{e} = 
+\begin{bmatrix}
+\rho v \\
+\rho v u \\
+p + \rho v^2 \\
+v \left(\rho e_{T} + p \right)
+\end{bmatrix}
+\end{displaymath}
+\begin{displaymath}
+e_T = e + \frac{u^2 + v^2}{2}, \quad e = \frac{p}{\rho \left(\gamma - 1 \right)}
+\end{displaymath}
+
+
+
+
+Which can be refactored by assuming the flow variables can be written as the sum of the mean quantity and the perturbation quantity, i.e.  $\rho = \Bar{\rho} + \rho'$, $u = \Bar{u} + u'$, $v = \Bar{v} + v'$, and $p = \Bar{p} + p'$, to give
+
+\begin{equation}
+    \frac{\partial \mathbf{U}}{\partial t} + \frac{\partial \mathbf{E}}{\partial x} + \frac{\partial \mathbf{F}}{\partial y} = \mathbf{S}
+\end{equation}
+where
+\begin{displaymath}
+\mathbf{U} = 
+\begin{bmatrix}
+\rho' \\
+\Bar{\rho} u' \\
+\Bar{\rho} v' \\
+p'
+\end{bmatrix}, \quad
+\mathbf{E} = 
+\begin{bmatrix}
+\rho' \Bar{u} + \Bar{\rho}u' \\
+p' + \Bar{\rho} \Bar{u} u' \\
+\Bar{\rho} \Bar{u} v' \\
+\Bar{u}p' + \gamma \Bar{p}u'
+\end{bmatrix}, \quad
+\mathbf{F} = 
+\begin{bmatrix}
+\rho' \Bar{v} + \Bar{\rho} v' \\
+\Bar{\rho}\Bar{v}u'\\
+p' + \Bar{\rho} \Bar{v}u'\\
+\Bar{v} p' + \gamma \Bar{p} v'
+\end{bmatrix}
+\end{displaymath}
+
+The non-homogeneous term S on the RHS of the PDE represents distributed time-dependent sources within the domain.
+
+The dependent variables of the Euler equations are then non-dimensionalised according to the freestream (uniform mean flow) conditions, with variables given in Table \ref{tab:DimensionlessVariables}.
+
+\begin{table}[h]
+    \centering
+    \caption{Dimensionless variables and associated scales.}
+    \begin{tabular}{ll}
+        \hline \hline
+        \textbf{Dimensionless variable} & \textbf{Scale} \\
+        \hline
+        $\Delta x$ & length \\
+        $a_\infty$ (ambient sound speed) & velocity \\
+        $\frac{\Delta x}{a_\infty}$ & time \\
+        $\rho_\infty$ & density \\
+        $\rho_\infty a_\infty^2$ & pressure \\
+        \hline \hline
+    \end{tabular}
+    \label{tab:DimensionlessVariables}
+\end{table}
+
+The derivation is relatively long but trivial, and thus unsuitable for a technical report of this length (please refer to pp.14-19 of \textcite{velu2010development} for the derivation). The resultant LEE with uniform mean flow (in the x direction to increase likeness towards an engine setup) and grouped flux terms are
+
+
+\begin{equation} \label{eq:LEE}
+    \frac{\partial \mathbf{U}}{\partial t} + \frac{\partial \mathbf{E}}{\partial x} + \frac{\partial \mathbf{F}}{\partial y} = 0
+\end{equation}
+where
+\begin{displaymath}
+\mathbf{U} = 
+\begin{bmatrix}
+\rho' \\
+u' \\
+v' \\
+p'
+\end{bmatrix}, \quad
+\mathbf{E} = 
+\begin{bmatrix}
+M \rho' + u' \\
+M u' + p' \\
+M v' \\
+M p' + u'
+\end{bmatrix}, \quad
+\mathbf{F} = 
+\begin{bmatrix}
+\rho' + v' \\
+u' \\
+v' + p' \\
+p' + v'
+\end{bmatrix}
+\end{displaymath}
+

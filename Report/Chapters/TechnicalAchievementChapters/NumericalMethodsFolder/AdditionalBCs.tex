@@ -1,0 +1,7 @@
+\subsubsection{Additional Boundary Conditions}
+
+At the termination of the PML at the truncated domain outer edge, the computed  variables are usually exponentially small so that reflection is not a concern (N.B. the 'reflectionless' characteristic of the PML is actually regarding the Euler/PML interface, and is only reflectionless by exact solution. Finite-difference approximations inherently introduce discontinuities at the interfaces which may provide grid-to-grid oscillations and reflections if the damping is not smoothly increased). However, it is good practice to impose a standard radiation boundary condition for outgoing acoustic waves, and an outflow boundary condition for entropy and vorticity waves - at the termination of the absorbing zone. The additional computational cost is minimal and ensures a watertight solution. A radiation BC simply implies that the amplitude of waves entering from infinity is required to be zero, whilst no conditions are placed on outgoing waves propagating to infinity. The equations to set the outflow BCs are lengthy, but can be found on page 82 (Equation 6.13) of \textcite{tam2012computational}. 
+
+Though this solution may directly impede reflective outer boundaries, it cannot prevent the PML from inflicting error and reflections on the inner domain by causing upstream effects and prematurely breaking up coherent wave fronts. These are the dominant errors of the following results section.
+
+\clearpage

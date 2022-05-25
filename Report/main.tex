@@ -1,0 +1,72 @@
+% Preamble
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry} %1in = 2.54cm margin
+\usepackage[titletoc,title]{appendix}
+\usepackage{amsmath,amsfonts,amssymb,mathtools}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\usepackage{calc}
+\newcommand{\incfig}[1]{%
+\def\svgwidth{\columnwidth}\import{Figures/}{#1.pdf_tex}}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{makecell}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{mathptmx}
+\usepackage[symbol]{footmisc}
+\usepackage{wrapfig}
+\usepackage{dirtytalk}
+\usepackage[backref=true]{biblatex}
+\usepackage{hyperref}
+\DefineBibliographyStrings{english}{backrefpage={Cited on p.}, backrefpages={Cited on pp.}}
+\usepackage{tablefootnote}
+\usepackage{fancyhdr}
+\usepackage[export]{adjustbox}
+\usepackage{sectsty}
+\sectionfont{\large}
+\subsectionfont{\normalsize}
+\subsubsectionfont{\footnotesize}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+
+\lhead{\footnotesize{Computational Aeroacoustics Absorbing Boundary Conditions}}
+\rhead{\footnotesize{Peter M. Cassidy}}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\renewcommand{\figurename}{Fig.}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+\captionsetup{labelsep=space}
+
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\scriptsize}
+
+\linespread{1}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{document}
+
+\input{Title page/TitlePageFile}
+\newpage
+
+\input{ChapterInputs}
+
+\printbibliography
+\clearpage
+
+\end{document}
+
+
+% - Peter Cassidy
