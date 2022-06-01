@@ -1,7 +1,7 @@
 # PML-FYP
 ## Investigating Absorbing Boundary Conditions for Computational Aeroacoustics Problems
 
-I completed my Master's degree at Loughborough University on aeronautical engineering, specialising in computational aeroacoustics boundary conditions - supervised by Dr Hao Xia.
+I completed my Master's degree at Loughborough University in aeronautical engineering, specialising in computational aeroacoustics boundary conditions - supervised by Dr Hao Xia.
 
 ![Summary](https://user-images.githubusercontent.com/29175819/170326782-ae6e92cf-5b1b-4db2-9514-8c62bf1255bc.png)
 
